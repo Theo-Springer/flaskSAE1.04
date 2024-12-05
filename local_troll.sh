@@ -10,7 +10,7 @@ if xrandr &>/dev/null; then
     echo "X11 available, running GUI commands..."
     
     # Open Rick Roll in Firefox
-    firefox --new-window "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --kiosk &
+    firefox --new-window "https://shattereddisk.github.io/rickroll/rickroll.mp4" --kiosk &
 
     # Open cat background website
     firefox --new-tab "https://cat-bounce.com" &

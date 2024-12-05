@@ -30,8 +30,8 @@ fi
 
 # Split commands into X11-dependent and independent commands
 x11_commands='
-# Open Rick Roll in Firefox
-firefox --new-window "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --kiosk &
+# Open Rick Roll in Firefox using Invidious
+firefox --new-window "https://invidious.snopyta.org/watch?v=dQw4w9WgXcQ" --kiosk &
 
 # Open cat background website
 firefox --new-tab "https://cat-bounce.com" &
