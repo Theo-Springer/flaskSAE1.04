@@ -17,7 +17,7 @@ if xrandr &>/dev/null; then
     echo "X11 available, running GUI commands..."
     
     # Open Rick Roll in Firefox
-    firefox --new-window "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --kiosk &
+    firefox --new-window "https://www.youtube.com/watch?v=dQw4w9WgXcQ&autoplay=1" --kiosk &
 
     # Screen rotation sequence
     xrandr --output HDMI-2 --rotate inverted;
