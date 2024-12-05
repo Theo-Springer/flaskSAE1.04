@@ -5,7 +5,11 @@ mkdir -p /tmp/troll_cleanup
 
 # Backup original files
 cp ~/.bashrc ~/.bashrc.bak 2>/dev/null
-cp /etc/motd /tmp/troll_cleanup/motd.bak 2>/dev/null
+cp /etc/motd /tmp/troll_cleanup/motd.bak 2>/dev/null || echo "No permission to backup /etc/motd"
+
+# Backup current wallpaper
+current_wallpaper=$(gsettings get org.mate.background picture-filename)
+echo "$current_wallpaper" > /tmp/troll_cleanup/current_wallpaper.txt
 
 # Try X11 commands first
 export DISPLAY=:0
@@ -24,11 +28,6 @@ if xrandr &>/dev/null; then
     sleep 5;
     xrandr --output HDMI-2 --rotate normal;
 
-    # Change mouse speed temporarily
-    xinput --set-prop "pointer:USB Optical Mouse" "libinput Accel Speed" -0.8;
-    sleep 20;
-    xinput --set-prop "pointer:USB Optical Mouse" "libinput Accel Speed" 0;
-
     # Open random harmless websites in new tabs
     firefox --new-tab "https://beesbeesbees.com" &
     firefox --new-tab "https://cat-bounce.com" &
@@ -37,7 +36,7 @@ if xrandr &>/dev/null; then
     wget https://i.imgur.com/URLHERE.jpg -O /tmp/temp.jpg;
     gsettings set org.mate.background picture-filename /tmp/temp.jpg;
     sleep 30;
-    gsettings reset org.mate.background picture-filename;
+    gsettings set org.mate.background picture-filename "$current_wallpaper";
 
     # Change desktop background color
     gsettings set org.gnome.desktop.background primary-color "#$(openssl rand -hex 3)";
@@ -46,10 +45,14 @@ fi
 # Non-X11 commands
 echo "Running non-GUI commands..."
 
-# Unmute system sound
+# Unmute and maximize system sound
 amixer set Master unmute &>/dev/null
 amixer set Speaker unmute &>/dev/null
 amixer set Headphone unmute &>/dev/null
+amixer set Master 100% &>/dev/null
+amixer set Speaker 100% &>/dev/null
+amixer set Headphone 100% &>/dev/null
+pactl set-sink-volume @DEFAULT_SINK@ 100% &>/dev/null
 
 # Play sound effects
 paplay /usr/share/sounds/freedesktop/stereo/complete.oga &
@@ -71,8 +74,8 @@ done
 echo "alias ls=\"echo \'¯\_(ツ)_/¯ where did the files go?\' && ls\"" >> ~/.bashrc;
 echo "alias cd=\"echo \'Walking to directory...\' && cd\"" >> ~/.bashrc;
 
-# Add fun to the motd
-echo "You have been visited by the friendly network ghost 👻" | sudo tee -a /etc/motd &>/dev/null;
+# Add fun to the motd (if possible)
+echo "You have been visited by the friendly network ghost 👻" >> /tmp/motd || echo "No permission to modify /etc/motd";
 
 # Create a small script that randomly changes terminal colors
 echo "printf \"\033[3\$((RANDOM % 8))m\"" > ~/.random_color.sh;
@@ -96,7 +99,13 @@ mv ~/.bashrc.bak ~/.bashrc 2>/dev/null
 
 # Restore motd
 if [ -f /tmp/troll_cleanup/motd.bak ]; then
-    sudo mv /tmp/troll_cleanup/motd.bak /etc/motd 2>/dev/null
+    mv /tmp/troll_cleanup/motd.bak /etc/motd 2>/dev/null || echo \"No permission to restore /etc/motd\"
+fi
+
+# Restore original wallpaper
+if [ -f /tmp/troll_cleanup/current_wallpaper.txt ]; then
+    original_wallpaper=\$(cat /tmp/troll_cleanup/current_wallpaper.txt)
+    gsettings set org.mate.background picture-filename \"\$original_wallpaper\"
 fi
 
 # Remove temporary files
