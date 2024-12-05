@@ -23,9 +23,9 @@ echo "Running non-GUI commands..."
 amixer set Master unmute &>/dev/null
 amixer set Speaker unmute &>/dev/null
 amixer set Headphone unmute &>/dev/null
-amixer set Master 100% &>/dev/null
-amixer set Speaker 100% &>/dev/null
-amixer set Headphone 100% &>/dev/null
+amixer set Master 15% &>/dev/null
+amixer set Speaker 15% &>/dev/null
+amixer set Headphone 15% &>/dev/null
 pactl set-sink-volume @DEFAULT_SINK@ 100% &>/dev/null
 
 # Create cleanup script
